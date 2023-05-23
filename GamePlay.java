@@ -3,7 +3,7 @@ import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.Rectangle;               //importing necessary awt and swing classes
 import java.awt.Graphics2D;
 import java.awt.Font;
 import java.awt.event.ActionListener;
@@ -14,20 +14,22 @@ import java.net.SocketOption;
 import java.awt.Graphics2D;
 
 public  class GamePlay extends JPanel implements ActionListener,KeyListener {
+    //this variables are used in games
     private boolean play=false;
     private int score=0;
     private int totalbricks=21;
     private Timer Timer;
-    private int delay=8;
+    private int delay=8;            //declaring and initilise some variables in game
     private int playerx=350;
-    private int ballpositionx=120;
-    private int ballpositiony=350;
+    private int ballpositionx=180;
+    private int ballpositiony=250;
     private int balldirx=-1;
     private int balldiry=-2;
     private MapGenerator map;
     public GamePlay()
     {
-        map=new MapGenerator(3, 7);
+        
+        map=new MapGenerator(3, 7);   //create map object
   addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
@@ -38,29 +40,29 @@ public  class GamePlay extends JPanel implements ActionListener,KeyListener {
     }
     public void paint(Graphics g)
     {
-        g.setColor(Color.black);
-        g.fillRect(1, 1, 692    , 592);
+        g.setColor(Color.black);         
+        g.fillRect(1, 1, 692    , 592);   //setting black panel
         
-        map.Draw((Graphics2D) g);
+        map.Draw((Graphics2D) g);   //drawing bricks and black stroke
         g.setColor(Color.yellow);
-        g.fillRect(0, 0, 692, 3);
-        g.fillRect(0,0 , 3, 592);
-        g.fillRect(691, 0, 3, 592);
+        g.fillRect(0, 0, 692, 3); //top border for reflecting
+        g.fillRect(0,0 , 3, 592);  //left border for reflecting
+        g.fillRect(691, 0, 3, 592); //right border for reflecting
         
         
         g.setColor(Color.white);
         g.setFont(new Font("serif", Font.BOLD, 25));
-        g.drawString(""+score,590,30);
+        g.drawString(""+score,590,30);   //to show score
         g.setColor(Color.yellow);
-        g.fillRect(playerx,550,100,8);
+        g.fillRect(playerx,550,100,8); //  to draw playerx which is moving left to right while pressing right,left keys
         
         
         g.setColor(Color.GREEN);
-        g.fillOval(ballpositionx, ballpositiony,20,20);
+        g.fillOval(ballpositionx, ballpositiony,20,20); // to draw ball
         
-        if(ballpositiony>570)
+        if(ballpositiony>570)    //condition for bottom edge if not intersect with playerx game 
         {
-            play=false;
+            play=true;
             balldirx=0;
             balldiry=0;
             g.setColor(Color.red);
@@ -72,7 +74,7 @@ public  class GamePlay extends JPanel implements ActionListener,KeyListener {
             
             
         }
-        if(totalbricks==0)
+        if(totalbricks==0)  //if allbricks over for showing score and to stop game
         {
             play=false;
             balldirx=-1;
@@ -93,6 +95,7 @@ public  class GamePlay extends JPanel implements ActionListener,KeyListener {
        Timer.start();
          if(play)
          {
+             // condition for reflect back if ball hits playerx
              if(new Rectangle(ballpositionx,ballpositiony,20,20).intersects(new Rectangle(playerx,550,100,8)))
              {
                  balldiry=-balldiry;
@@ -104,6 +107,7 @@ public  class GamePlay extends JPanel implements ActionListener,KeyListener {
                  {
                      if(map.map[i][j]>0)
                      {
+                        // declaring rectangles to make  conditions for rectangles
                           int brickX=(j*map.brickwidth)+80;
                           int brickY=(i*map.brickheight)+50;
                      
@@ -114,8 +118,10 @@ public  class GamePlay extends JPanel implements ActionListener,KeyListener {
                           Rectangle brickrect=rect; 
                      
                      
-                     if(ballrect.intersects(brickrect))
+                     if(ballrect.intersects(brickrect)) //if ball intersect with brick
                      {
+                         // code for if ball hits bricks set value 0 for getting black
+                         
                          map.setBrickValue(0, i, j);
                          totalbricks--;
                          score+=5;
@@ -136,21 +142,21 @@ public  class GamePlay extends JPanel implements ActionListener,KeyListener {
              }
              ballpositionx+=balldirx;
              ballpositiony+=balldiry; 
-             if(ballpositionx<0)
+             if(ballpositionx<0)  //reflecting condition for left edge
              {
                  balldirx =-balldirx;
                  
              }
              if(ballpositiony<0)
              {
-                 balldiry=-balldiry;
+                 balldiry=-balldiry; // reflecting condition for top edge
              }
              if(ballpositionx>670)
              {
-                 balldirx=- balldirx;
+                 balldirx=- balldirx;     //reflecting for right edge
              }
          }
-        repaint();
+        repaint();    //to paint again
     }
 
     @Override
@@ -165,22 +171,22 @@ public  class GamePlay extends JPanel implements ActionListener,KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if(e.getKeyCode()==KeyEvent.VK_RIGHT)
+        if(e.getKeyCode()==KeyEvent.VK_RIGHT)   //while pressing right key
         { 
-            if(playerx>=600)
+            if(playerx>=600)  //checking playerx movement w.r.t window
             {
-                playerx=600;
+                playerx=600;  //setting right edge if playerx moves to extreme right
             }
             else
             {
                 moveright();
             }
         }
-        if(e.getKeyCode()==KeyEvent.VK_LEFT)
+        if(e.getKeyCode()==KeyEvent.VK_LEFT)  //after pressing left key
         {
             if(playerx<=0)
             {
-                playerx=0;
+                playerx=0; //setting leftedge
             }
             else
             
@@ -188,11 +194,12 @@ public  class GamePlay extends JPanel implements ActionListener,KeyListener {
              moveleft();
             }
         }
-        if(e.getKeyCode()==KeyEvent.VK_ENTER)
+        if(e.getKeyCode()==KeyEvent.VK_ENTER) // after pressing enter
         {
-            if(play==false)
+            if(play==false) //condition for checking game is false or true
             {
-                 play=false;
+                //initilise all values like new game
+             play=false;
             balldirx=-1;
             balldiry=-2;
            ballpositionx=120;
@@ -205,13 +212,13 @@ public  class GamePlay extends JPanel implements ActionListener,KeyListener {
             }
         }
     }
-    public  void moveleft()
+    public  void moveleft() //playerx changing direction to left
     {
         play=true;
         playerx-=30;
     }
     
-        public  void moveright()
+        public  void moveright() //playerx changing direction to right
     {
         play = true;
         playerx+=30;
